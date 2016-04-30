@@ -196,7 +196,7 @@ public class SignUpFragment extends Fragment {
 
                 @Override
                 public void onError(Exception e) {
-                    Log.e("LoginFrag", e.getMessage());
+//                    Log.e("LoginFrag", e.getMessage());
                     status="0";
                 }
             });

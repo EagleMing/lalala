@@ -507,7 +507,7 @@ public class ModifyUserInfo extends AppCompatActivity implements View.OnClickLis
 
                 @Override
                 public void onError(Exception e) {
-                    Log.e("LoginFrag", e.getMessage());
+//                    Log.e("LoginFrag", e.getMessage());
                     status="0";
                 }
             });

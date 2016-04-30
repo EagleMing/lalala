@@ -118,9 +118,9 @@ public class ContactFragment extends Fragment implements View.OnClickListener,
                 PixelFormat.TRANSLUCENT);
         mWindowManager.addView(mDialogText, lp);
         indexBar.setTextView(mDialogText);
-        layout_head = getActivity().getLayoutInflater().inflate(
-                R.layout.layout_head_friend, null);
-        lvContact.addHeaderView(layout_head);
+//        layout_head = getActivity().getLayoutInflater().inflate(
+//                R.layout.layout_head_friend, null);
+//        lvContact.addHeaderView(layout_head);
 
     }
 
@@ -158,9 +158,9 @@ public class ContactFragment extends Fragment implements View.OnClickListener,
     public void onClick(View v) {
         switch (v.getId()) {
 
-            case R.id.layout_addfriend:// 添加好友   暂时把这个按钮在xml里选择了不能点击，以后再加上这个功能
+//            case R.id.layout_addfriend:// 添加好友   暂时把这个按钮在xml里选择了不能点击，以后再加上这个功能
                 //Utils.start_Activity(getActivity(), NewFriendsListActivity.class);
-                break;
+//                break;
 
             default:
                 break;
@@ -169,7 +169,8 @@ public class ContactFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-        User user = DatasUtil.getUsers().get(arg2 - 1);
+//        User user = DatasUtil.getUsers().get(arg2 - 1);
+        User user = DatasUtil.getUsers().get(arg2 );
         Toast.makeText(getActivity(),user.getName(),Toast.LENGTH_SHORT).show();
 
 
@@ -250,7 +251,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener,
 
                 @Override
                 public void onError(Exception e) {
-                    Log.e("LoginFrag", e.getMessage());
+//                    Log.e("LoginFrag", e.getMessage());
                     status = "0";
                 }
             });

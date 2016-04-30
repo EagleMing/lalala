@@ -22,6 +22,7 @@ import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps2d.AMap;
+import com.amap.api.maps2d.AMapOptions;
 import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.LocationSource;
 import com.amap.api.maps2d.MapView;
@@ -131,6 +132,7 @@ public class MapFragment extends Fragment implements LocationSource,
         aMap.getUiSettings().setMyLocationButtonEnabled(true);// 设置默认定位按钮是否显示
         aMap.setMyLocationEnabled(true);// 设置为true表示显示定位层并可触发定位，false表示隐藏定位层并不可触发定位，默认是false
         aMap.getUiSettings().setScaleControlsEnabled(true);//显示比例尺
+        aMap.getUiSettings().setZoomPosition(AMapOptions.ZOOM_POSITION_RIGHT_CENTER);//将缩放按钮放在右边中间
         aMap.moveCamera(CameraUpdateFactory.zoomTo(aMap.getMaxZoomLevel()));//自动放大到当前最大比例尺
 
         // 自定义系统定位小蓝点
@@ -191,6 +193,8 @@ public class MapFragment extends Fragment implements LocationSource,
 
         int N = markItems.size();
         for(int i=0;i<N;i++){
+            Log.i("MapFragment:","lati:"+markItems.get(i).getLatitude()+"   longi:"+ markItems.get(i).getLongitude());
+            Log.i("MapFragment:position:", markItems.get(i).getPositionName() + "   username:"+markItems.get(i).getUserName());
             addOneMarker(new LatLng(markItems.get(i).getLatitude(),markItems.get(i).getLongitude()),
                     markItems.get(i).getPositionName(),markItems.get(i).getUserName());
         }

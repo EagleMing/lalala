@@ -485,7 +485,7 @@ public class SharedFragment extends ListFragment implements  ICircleView {
 
                 @Override
                 public void onError(Exception e) {
-                    Log.e("SharedFrag", e.getMessage());
+//                    Log.e("SharedFrag", e.getMessage());
                     status="0";
                 }
             });
