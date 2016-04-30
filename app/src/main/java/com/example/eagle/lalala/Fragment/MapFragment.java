@@ -3,7 +3,10 @@ package com.example.eagle.lalala.Fragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -27,8 +31,16 @@ import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.maps2d.model.MyLocationStyle;
+import com.example.eagle.lalala.Activity.MainActivity;
+import com.example.eagle.lalala.NetWork.HttpCallbackListener;
+import com.example.eagle.lalala.NetWork.HttpUtil;
+import com.example.eagle.lalala.PDM.MarkItemResponse;
 import com.example.eagle.lalala.R;
 import com.google.android.gms.common.api.GoogleApiClient;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -54,8 +66,31 @@ public class MapFragment extends Fragment implements LocationSource,
     private AMapLocationClientOption mLocationOption;
     private Button locate_btn;
 
-    private Marker marker;
-    private ArrayList<Marker> markersList=new ArrayList<Marker>();
+    private int counter=0;//用来计算异步类多久执行一次
+    private double lastLatitude;
+    private double lastLongitude;
+
+    private ArrayList<MarkItemResponse> markItems;
+    private ArrayList<Marker> markers;
+    private static final String serviceUrl="http://119.29.166.177:8080/getAroundMarks";
+    private JSONArray MarksjsonArray;
+//    private Marker marker;
+//    private ArrayList<Marker> markersList=new ArrayList<Marker>();
+
+    private Handler handler = new Handler(){
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    addMarkers();
+
+                    break;
+                case -1:
+
+                    Toast.makeText(getActivity(),"获得周边Marks失败",Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
 
 
     @Override
@@ -76,12 +111,7 @@ public class MapFragment extends Fragment implements LocationSource,
         super.onViewCreated(view, savedInstanceState);
         mapView = (MapView)view.findViewById(R.id.gdmapview);
         mapView.onCreate(savedInstanceState);
-        locate_btn = (Button)view.findViewById(R.id.btn_locate);
-        locate_btn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                init();marker=null;
-            }
-        });
+        init();
     }
 
 
@@ -112,31 +142,72 @@ public class MapFragment extends Fragment implements LocationSource,
         myLocationStyle.strokeWidth(0f);// 设置圆形的边框粗细
         aMap.setMyLocationStyle(myLocationStyle);
 
-        addMarkers(new LatLng(23.051629, 113.400453),"C12222","GL");
+//        addMarkers(new LatLng(23.051629, 113.400453),"C12222","GL");
     }
 
-    public void addMarkers(LatLng latLng,String place, String usr) {
+//    public void addMarkers(LatLng latLng,String place, String usr) {
+//
+//        if(marker != null) marker.destroy();
+//
+//        marker = aMap.addMarker(
+//                new MarkerOptions()
+//                        .position(latLng)
+//                        .anchor(0.5f,1f)
+//                        .title(place)
+//                        .snippet("Marked by: "+usr)
+//                        .icon(
+//                                BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
+//                        )
+//                        .draggable(false)
+//        );
+//        markersList.add(markersList.size(),marker);
+//        //"_location": "113.400453,23.051629",
+//        //"_name": "华工大学城校区C12",
+//        marker.showInfoWindow();
+//
+//    }
 
-        if(marker != null) marker.destroy();
-
+    public void addOneMarker(LatLng latLng,String placename, String usr) {
+        Marker marker;
         marker = aMap.addMarker(
                 new MarkerOptions()
+                        .title(placename).snippet("Marked by: "+usr)
                         .position(latLng)
                         .anchor(0.5f,1f)
-                        .title(place)
-                        .snippet("Marked by: "+usr)
                         .icon(
                                 BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
                         )
                         .draggable(false)
         );
-        markersList.add(markersList.size(),marker);
-        //"_location": "113.400453,23.051629",
-        //"_name": "华工大学城校区C12",
         marker.showInfoWindow();
+
+        markers.add(marker);
 
     }
 
+    public void addMarkers(){
+
+        removeAllMarkers();
+
+        int N = markItems.size();
+        for(int i=0;i<N;i++){
+            addOneMarker(new LatLng(markItems.get(i).getLatitude(),markItems.get(i).getLongitude()),
+                    markItems.get(i).getPositionName(),markItems.get(i).getUserName());
+        }
+    }
+
+    private void removeAllMarkers()
+    {
+        if(!markers.isEmpty())
+        {
+            for(Marker m : markers)
+            {
+                m.destroy();
+            }
+        }
+
+        markers.clear();
+    }
     //获得纬度double值
     public double getCurrentLatitude(){
         return mlocationClient.getLastKnownLocation().getLatitude();
@@ -188,6 +259,23 @@ public class MapFragment extends Fragment implements LocationSource,
         mapView.onDestroy();
     }
 
+//    /**
+//     * 定位成功后回调函数
+//     */
+//    @Override
+//    public void onLocationChanged(AMapLocation amapLocation) {
+//        if (mListener != null && amapLocation != null) {
+//            if (amapLocation != null
+//                    && amapLocation.getErrorCode() == 0) {
+//                mListener.onLocationChanged(amapLocation);// 显示系统小蓝点
+//            } else {
+//                String errText = "定位失败," + amapLocation.getErrorCode() + ": " + amapLocation.getErrorInfo();
+//                Log.e("AmapErr", errText);
+//            }
+//        }
+//    }
+
+
     /**
      * 定位成功后回调函数
      */
@@ -197,6 +285,17 @@ public class MapFragment extends Fragment implements LocationSource,
             if (amapLocation != null
                     && amapLocation.getErrorCode() == 0) {
                 mListener.onLocationChanged(amapLocation);// 显示系统小蓝点
+
+                lastLongitude = getCurrentLogitude();
+                lastLatitude = getCurrentLatitude();
+
+                counter++;
+                if(counter > 90){//三分钟一次
+                    new GetAroundMarks().execute();
+                    counter=0;
+                }
+
+
             } else {
                 String errText = "定位失败," + amapLocation.getErrorCode() + ": " + amapLocation.getErrorInfo();
                 Log.e("AmapErr", errText);
@@ -251,5 +350,86 @@ public class MapFragment extends Fragment implements LocationSource,
         mlocationClient = null;
     }
 
+
+    private class GetAroundMarks extends AsyncTask<Void, Void, String> {
+        private String status;
+        private String info;
+
+        @Override
+        protected String doInBackground(Void... params) {
+            JSONObject object = new JSONObject();
+            try {
+                object.put("userID", MainActivity.userId);
+                object.put("longitude",lastLongitude);
+                object.put("latitude",lastLatitude);
+                Log.i("AroundMarks:id:", object.get("userID").toString());
+                Log.i("AroundMark:longitude:", object.get("longitude").toString());
+                Log.i("AroundMarks:latitude:", object.get("latitude").toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            HttpUtil.getJsonArrayByHttp(serviceUrl, object, new HttpCallbackListener() {
+                @Override
+                public void onFinishGetJson(JSONObject jsonObject) {
+                    if (jsonObject != null) {
+                        try {
+                            status = jsonObject.getString("status");
+                            info = jsonObject.getString("info");
+                            MarksjsonArray = jsonObject.getJSONArray("marks");
+                            Log.i("AroundMarks:array:", MarksjsonArray.toString());
+
+                            if(MarksjsonArray != null )
+                            {
+                                markItems.clear();
+
+                                for(int i=0;i<MarksjsonArray.length();i++)
+                                {
+                                    JSONObject markObject = MarksjsonArray.getJSONObject(i);
+                                    MarkItemResponse markItem = new MarkItemResponse();
+                                    markItem.setContent(markObject.getString("content"));
+                                    markItem.setUserName(markObject.getString("userName"));
+                                    markItem.setPositionName(markObject.getString("positionName"));
+                                    markItem.setLatitude(Double.valueOf(markObject.getDouble("latitude")));
+                                    markItem.setLongitude(Double.valueOf(markObject.getDouble("longitude")));
+
+                                    markItems.add(markItem);
+                                }
+                            }
+
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    Message message= new Message();
+                    if (status.equals("1") && info.equals("OK")) {
+                        message.what=1;
+                    }else{
+                        message.what=-1;
+                    }
+                    handler.sendMessage(message);
+                }
+
+                @Override
+                public void onFinishGetString(String response) {
+
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    status="0";
+                }
+            });
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+    }
 }
 

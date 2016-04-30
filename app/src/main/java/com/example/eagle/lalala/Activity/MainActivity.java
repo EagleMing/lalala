@@ -218,6 +218,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }finally {
             db.endTransaction();
         }
+        db.close();
     }
 
 
@@ -286,8 +287,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final HashMap<String,Object> userInfo=new HashMap<>();
         try {
             userName=userJson.object.getString("userName");
+
             String icon= userJson.object.getString("icon");
-            String background =userJson.object.getString("background");
+            String background = userJson.object.getString("background");
+
             userId = userJson.object.getLong("userID");
             Log.i("MainActivity:::userId:", userId + "");
             Log.i("MainActivity:::object:", userJson.object.toString());
@@ -365,6 +368,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.i("Database::", "delete "+i);
                     ContentValues values = new ContentValues();
                     boolean flag = false;
+                    Log.i("Database::userId:",userId+" "+ userInfo.get("userId"));
                     if ((long) userInfo.get("userId") != 0) {
                         values.put(WeMarkDatabaseHelper.USER_ID, (long) userInfo.get("userId"));
                         flag = true;//标志有userId，不为空才可以插入

@@ -158,7 +158,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener,
     public void onClick(View v) {
         switch (v.getId()) {
 
-            case R.id.layout_addfriend:// 添加好友
+            case R.id.layout_addfriend:// 添加好友   暂时把这个按钮在xml里选择了不能点击，以后再加上这个功能
                 //Utils.start_Activity(getActivity(), NewFriendsListActivity.class);
                 break;
 

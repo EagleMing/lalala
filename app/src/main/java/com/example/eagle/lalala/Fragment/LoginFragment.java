@@ -70,11 +70,15 @@ public class LoginFragment extends Fragment {
 //                    onLoginSuccess((JSONObject) msg.obj);
                     JSONObject object = new JSONObject();
                     try {
-                        if (newJsonObject.getString("icon") != null && !newJsonObject.getString("icon").equals("")) {
+                        if ( !newJsonObject.getString("icon").equals("")) {
                             object.put("icon",saveUserIcon(newJsonObject.getString("icon")).getAbsolutePath());
+                        }else{
+                            object.put("icon","");
                         }
-                        if (newJsonObject.getString("background") != null && !newJsonObject.getString("background").equals("")) {
+                        if ( !newJsonObject.getString("background").equals("")) {
                             object.put("background",saveUserBackground(newJsonObject.getString("background")).getAbsolutePath());
+                        }else{
+                            object.put("background","");
                         }
                         object.put("userName", newJsonObject.getString("userName"));
                         object.put("userID", newJsonObject.getLong("userID"));
@@ -182,6 +186,7 @@ public class LoginFragment extends Fragment {
         Intent startMainAty = new Intent(getActivity(), MainActivity.class);
         startMainAty.putExtra("userInfo", userJson);
         startActivity(startMainAty);
+        getActivity().finish();
     }
 
     public void onLoginFailed() {

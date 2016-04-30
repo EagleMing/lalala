@@ -10,6 +10,7 @@
 		style="@style/MMListItem"
 		android:layout_height="55.0dip"
 		android:background="@drawable/setting_item_selector"
+		android:clickable="false"
 		android:paddingLeft="15dip">
 		<ImageView
 			android:layout_width="40dip"
