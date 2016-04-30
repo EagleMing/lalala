@@ -3,7 +3,6 @@
     <color name="color_8290AF">#8290AF</color>
     <color name="color_232323">#232323</color>
     <color name="color_aeaeae">#aeaeae</color>
-    <color name="blue">#225588</color>
     <color name="im_social_dig_name_bg">#DDDDDD</color>
     <color name="im_font_color_text_hint">#abb1b6</color>
     <color name="colorPrimary">#3F51B5</color>
@@ -15,23 +14,24 @@
     <color name="bg_no_photo">#EEEEEE</color>
 
     <color name="windows_color">#F5F5F5</color>
-    <color name="greeny">#ff11aca6</color>
     <color name="grey"> #ebebeb</color>
     <color name="black"> #000000</color>
     <color name="darkgrey"> #999999</color>
+
     <color name="white"> #FFFFFF</color>
-    <color name="red"> #FF3300</color>
-    <color name="green">#CCFF99</color>
-    <color name="gary">#333333</color>
-    <color name="gray_lite">#c5c5c5</color>
     <color name="black2">#ffeeeeee</color>
     <color name="black1">#7A7E83</color>
+    <color name="red"> #F22900</color>
+    <color name="green">#9dd01e</color>
+    <color name="blue">#1d3256</color>
+    <color name="blue_lite">#98accd</color>
+    <color name="gray">#333333</color>
+    <color name="gray_lite">#d5d5d8</color>
     <color name="itemlist">#f4f4f4</color>
     <color name="watermark_hint">#ccffffff</color>
     <color name="act_background">#efefef</color>
 
     <color name="tv_transp_selected">#ffffffff</color>
     <color name="tv_transp_normal">#b0ffffff</color>
-    <color name="gray">#ff808080</color>
 
 </resources>

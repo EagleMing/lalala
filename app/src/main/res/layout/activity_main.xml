@@ -43,8 +43,8 @@
             android:layout_marginBottom="8dp"
             android:layout_marginRight="5dp"
             fab:menu_icon="@drawable/ic_star"
-            fab:menu_colorNormal="#2b2a2b"
-            fab:menu_colorPressed="#454444"
+            fab:menu_colorNormal="#FFFFFF"
+            fab:menu_colorPressed="#6a6b6b"
             fab:menu_colorRipple="#6a6b6b">
 
             <com.example.neilhy.floatingbutton_library.FloatingActionButton

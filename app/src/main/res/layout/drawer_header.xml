@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="150dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/blue"
+    android:background="@color/grey"
     android:gravity="bottom"
     android:orientation="vertical"
     android:padding="16dp"
@@ -21,9 +21,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/drawer_header_name"
+        android:id="@+id/drawer_header_usrname"
         android:textSize="17dp"
-        android:textColor="@color/white"
+        android:textColor="@color/gray"
+        android:textStyle="bold"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />

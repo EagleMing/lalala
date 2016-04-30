@@ -15,7 +15,7 @@
 
         <ImageView
             android:id="@+id/signup_iv"
-            android:src="@drawable/ic_search"
+            android:src="@drawable/logo_wm"
             android:layout_width="wrap_content"
             android:layout_height="72dp"
             android:layout_marginBottom="24dp"
@@ -88,8 +88,9 @@
                   android:layout_height="wrap_content"
                   android:layout_marginBottom="24dp"
                   android:text="@string/askLogin"
+                  android:textColor="@color/grey"
                   android:gravity="center"
-                  android:textSize="16dip"/>
+                  android:textSize="14dp"/>
 
     </LinearLayout>
 </ScrollView>

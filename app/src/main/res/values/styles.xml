@@ -8,19 +8,19 @@
         <!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
         <!--<item name="colorAccent">@color/colorAccent</item>-->
         <!--导航栏底色-->
-        <item name="colorPrimary">@color/accent_material_dark</item>
+        <item name="colorPrimary">#98accd</item>
         <!--状态栏底色-->
-        <item name="colorPrimaryDark">@color/accent_material_light</item>
+        <item name="colorPrimaryDark">#98accd</item>
         <!--导航栏上的标题颜色-->
-        <item name="android:textColorPrimary">@android:color/black</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
         <!--Activity窗口的颜色-->
-        <item name="android:windowBackground">@color/material_blue_grey_800</item>
+        <item name="android:windowBackground">@color/blue</item>
         <!--按钮选中或者点击获得焦点后的颜色-->
-        <item name="colorAccent">#00ff00</item>
+        <item name="colorAccent">#c5c5c5</item>
         <!--和 colorAccent相反，正常状态下按钮的颜色-->
-        <item name="colorControlNormal">#ff0000</item>
+        <item name="colorControlNormal">#ffffff</item>
         <!--Button按钮正常状态颜色-->
-        <item name="colorButtonNormal">@color/accent_material_light</item>
+        <item name="colorButtonNormal">#98accd</item>
         <!--EditText 输入框中字体的颜色-->
         <item name="editTextColor">@android:color/white</item>
 
@@ -96,7 +96,7 @@
         <item name="fab_size">mini</item>
         <item name="fab_showAnimation">@anim/jump_from_down</item>
         <item name="fab_hideAnimation">@anim/jump_to_down</item>
-        <item name="fab_shadowColor">#444</item>
+        <item name="fab_shadowColor">#999999</item>
         <item name="fab_colorNormal">#FFB805</item>
         <item name="fab_colorPressed">#F2AB00</item>
         <item name="fab_colorRipple">#D99200</item>
@@ -104,17 +104,21 @@
 
     <style name="MenuButtonsSmall">
         <item name="fab_size">mini</item>
-        <item name="fab_colorNormal">#1565C0</item>
-        <item name="fab_colorPressed">#2272CD</item>
-        <item name="fab_colorRipple">#62B2FF</item>
+        <item name="fab_colorNormal">#da4336</item>
     </style>
 
     <style name="MenuButtonsSmall.Green">
-        <item name="fab_colorNormal">#43A047</item>
-        <item name="fab_colorPressed">#2E7D32</item>
-        <item name="fab_colorRipple">#1B5E20</item>
+        <item name="fab_size">mini</item>
+        <item name="fab_colorNormal">#da4336</item>
     </style>
 
+    <!--<item name="fab_colorNormal">#98accd</item>-->
+    <!--<item name="fab_colorPressed">#98acff</item>-->
+    <!--<item name="fab_colorRipple">#98acff</item>-->
+
+    <!--<item name="fab_colorNormal">#43A047</item>-->
+    <!--<item name="fab_colorPressed">#2E7D32</item>-->
+    <!--<item name="fab_colorRipple">#1B5E20</item>-->
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>

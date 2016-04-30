@@ -66,7 +66,7 @@ public class MapFragment extends Fragment implements LocationSource,
     private AMapLocationClientOption mLocationOption;
     private Button locate_btn;
 
-    private int counter=0;//用来计算异步类多久执行一次
+    private int counter=91;//用来计算异步类多久执行一次
     private double lastLatitude;
     private double lastLongitude;
 
