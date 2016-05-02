@@ -71,8 +71,8 @@ public class MapFragment extends Fragment implements LocationSource,
     private double lastLatitude;
     private double lastLongitude;
 
-    private ArrayList<MarkItemResponse> markItems;
-    private ArrayList<Marker> markers;
+    private ArrayList<MarkItemResponse> markItems = new ArrayList<>();
+    private ArrayList<Marker> markers = new ArrayList<>();
     private static final String serviceUrl="http://119.29.166.177:8080/getAroundMarks";
     private JSONArray MarksjsonArray;
 //    private Marker marker;
@@ -181,9 +181,10 @@ public class MapFragment extends Fragment implements LocationSource,
                         )
                         .draggable(false)
         );
+        markers.add(markers.size(),marker);
         marker.showInfoWindow();
 
-        markers.add(marker);
+
 
     }
 
@@ -192,6 +193,8 @@ public class MapFragment extends Fragment implements LocationSource,
         removeAllMarkers();
 
         int N = markItems.size();
+        Log.i("MapFrg:remove:N:", N +"");
+
         for(int i=0;i<N;i++){
             Log.i("MapFragment:","lati:"+markItems.get(i).getLatitude()+"   longi:"+ markItems.get(i).getLongitude());
             Log.i("MapFragment:position:", markItems.get(i).getPositionName() + "   username:"+markItems.get(i).getUserName());
@@ -206,6 +209,7 @@ public class MapFragment extends Fragment implements LocationSource,
         {
             for(Marker m : markers)
             {
+                Log.i("MapFrg:remove:marker", m.toString());
                 m.destroy();
             }
         }
@@ -385,11 +389,17 @@ public class MapFragment extends Fragment implements LocationSource,
 
                             if(MarksjsonArray != null )
                             {
+                                Log.i("MapFrag:markobject:", "array not null");
+
                                 markItems.clear();
+                                Log.i("MapFrag:markobject:", "clear");
+
 
                                 for(int i=0;i<MarksjsonArray.length();i++)
                                 {
                                     JSONObject markObject = MarksjsonArray.getJSONObject(i);
+                                    Log.i("MapFrag:markobject:", markObject.toString());
+
                                     MarkItemResponse markItem = new MarkItemResponse();
                                     markItem.setContent(markObject.getString("content"));
                                     markItem.setUserName(markObject.getString("userName"));
