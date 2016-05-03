@@ -563,7 +563,7 @@ public class SharedFragment extends ListFragment implements  ICircleView {
 
     //============================================================================
     //添加朋友关系
-//    private static final String serviceUrl="http://119.29.166.177:8080/createRelation";
+//    private static final String serviceUrl="http://119.29.166.177:8080/createRelationByEmail";
 //    private Handler handler = new Handler(){
 //        public void handleMessage(Message msg) {
 //            switch (msg.what) {
@@ -578,13 +578,13 @@ public class SharedFragment extends ListFragment implements  ICircleView {
 //        }
 //    };
 
-    //    //这里需要传入userID 和 friendID  类型都为long。还有关系relation 好友关系为 0，
-//    // 方法：long friendID;
+    //    //这里需要传入userID 和 emailAddr 。还有关系relation 好友关系为 0，
+//    // 方法：String friendEmail;
 //    //long userID;
 //
 //    JSONObject object = new JSONObject();
 //    object.put("userID", userID);
-//    object.put("markID", friendID);
+//    object.put("emailAddr", friendEmail);
 //    object.put("relation",0);
 
 //    //new addFriend().execute(object);//调用这个异步类的时候，直接把上面的jsonobject传入即可
@@ -663,7 +663,7 @@ public class SharedFragment extends ListFragment implements  ICircleView {
 //    object.put("content",content);
 
 //    //new addComment().execute(object);//调用这个异步类的时候，直接把上面的jsonobject传入即可
-
+    long commentId; //评论的id
     private class addComment extends AsyncTask<JSONObject, Void, Void> {
         private String status;
         private String info;
@@ -679,6 +679,7 @@ public class SharedFragment extends ListFragment implements  ICircleView {
                         try {
                             status = jsonObject.getString("status");
                             info = jsonObject.getString("info");
+                            commentId = jsonObject.getLong("id");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -732,6 +733,7 @@ public class SharedFragment extends ListFragment implements  ICircleView {
     // 方法：long markID;
     //long userID;
     //new addLike().execute(userID, markID);
+    long likeId;    //获得到 赞的id
     private class addLike extends AsyncTask<Long, Void, Void> {
         private String status;
         private String info;
@@ -753,6 +755,7 @@ public class SharedFragment extends ListFragment implements  ICircleView {
                         try {
                             status = jsonObject.getString("status");
                             info = jsonObject.getString("info");
+                            likeId = jsonObject.getLong("id");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -849,3 +852,74 @@ public class SharedFragment extends ListFragment implements  ICircleView {
         }
     }
 }
+
+
+//===============================================================================
+//删除评论
+//private static final String serviceUrl_deleteLike="http://119.29.166.177:8080/deleteLike";
+//private static final String serviceUrl_deleteComment="http://119.29.166.177:8080/deleteComment";
+//private Handler handler_deleteMark = new Handler(){
+//    public void handleMessage(Message msg) {
+//        switch (msg.what) {
+//            case 1:
+//                //这里加上在本地的删除评论的事件就可以了
+//                mAdapter.notifyDataSetChanged();//这里可以改善
+//                Toast.makeText(getActivity(),"删除评论成功",Toast.LENGTH_SHORT).show();
+//
+//                break;
+//            case -1:
+//                Toast.makeText(getActivity(),"删除评论失败……",Toast.LENGTH_SHORT).show();
+//                break;
+//        }
+//    }
+//};
+// String servicePath=serviceUrl_deleteLike 或者 serviceUrl_deleteComment;
+//        JSONObject idObject = new JSONObject();
+//try {
+//            idObject.put("id", 赞的id或者评论的id);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+////    //这里需要传入 评论或者赞的id，类型为long。 方法：new deleteCommentorLike().execute(servicePath);
+//private class deleteMark extends AsyncTask<String, Void, Void> {
+//    private String status;
+//    private String info;
+//    @Override
+//    protected Void doInBackground(String... params) {
+//
+//        HttpUtil.getJsonArrayByHttp(params[0],idObject, new HttpCallbackListener() {
+//            @Override
+//            public void onFinishGetJson(JSONObject jsonObject) {
+//                if (jsonObject == null) {
+//                    Log.i("status", "json:null");
+//                } else if (jsonObject != null) {
+//                    try {
+//                        status = jsonObject.getString("status");
+//                        info = jsonObject.getString("info");
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                Message message = new Message();
+//                if (status.equals("1") && info.equals("OK")) {
+//                    message.what = 1;
+//                } else {
+//                    message.what = -1;
+//                }
+//                handler_deleteMark.sendMessage(message);
+//            }
+//
+//            @Override
+//            public void onFinishGetString(String response) {
+//
+//            }
+//
+//            @Override
+//            public void onError(Exception e) {
+//                Log.e("LoginFrag", e.getMessage());
+//                status = "0";
+//            }
+//        });
+//        return null;
+//    }
+//}

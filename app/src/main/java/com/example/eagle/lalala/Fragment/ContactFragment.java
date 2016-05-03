@@ -261,7 +261,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener,
         @Override
         protected void onPreExecute() {
             progressDialog = new ProgressDialog(getActivity());
-            progressDialog.setMessage("正在注册,请稍候...");
+            progressDialog.setMessage("正在加载,请稍候...");
             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progressDialog.setCancelable(false);
             progressDialog.show();
