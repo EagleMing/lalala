@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -64,11 +65,11 @@ import butterknife.OnClick;
 /**
  * Created by eagle on 2016/4/9.
  */
-public class SharedFragment extends ListFragment implements  ICircleView {
+public class SharedFragment extends ListFragment implements ICircleView {
 
     private String serviceUrl;
 
-    private String[] mStringList={"WeMark Sun.","WeMark Mon.","WeMark Tues.","WeMark Wed.","WeMark Thur.","WeMark Fri.","WeMark Sat."};
+    private String[] mStringList = {"WeMark Sun.", "WeMark Mon.", "WeMark Tues.", "WeMark Wed.", "WeMark Thur.", "WeMark Fri.", "WeMark Sat."};
 
 
     ListView mCircleLv;
@@ -83,21 +84,44 @@ public class SharedFragment extends ListFragment implements  ICircleView {
     private CommentConfig mCommentConfig;
     private JSONArray MarksjsonArray;
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mAdapter.notifyDataSetChanged();
+    }
 
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:
                     if (MarksjsonArray != null) {//不知道用jsonArray去接受的话，会报错，先调试用jsonobject去接收，等我找出原因先。
                         makeMarksList(MarksjsonArray);
 //                        Log.i("SharedFrag:Array::", MarksjsonArray.toString());
-                        Toast.makeText(getActivity(),"刷新朋友圈列表成功",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "刷新Marks成功", Toast.LENGTH_SHORT).show();
                         mCircleLv.setAdapter(mAdapter);
                         mAdapter.notifyDataSetChanged();
                     }
                     break;
                 case -1:
-                    Toast.makeText(getActivity(),"刷新朋友圈列表失败……",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "刷新Marks失败……", Toast.LENGTH_SHORT).show();
+                    break;
+                case 2:
+                    Toast.makeText(getActivity(), "评论成功", Toast.LENGTH_SHORT).show();
+                    break;
+                case -2:
+                    Toast.makeText(getActivity(), "评论失败……", Toast.LENGTH_SHORT).show();
+                    break;
+                case 3:
+                    Toast.makeText(getActivity(), "点赞成功", Toast.LENGTH_SHORT).show();
+                    break;
+                case -3:
+                    Toast.makeText(getActivity(), "点赞失败……", Toast.LENGTH_SHORT).show();
+                    break;
+                case 4:
+                    Toast.makeText(getActivity(), "删除Mark成功", Toast.LENGTH_SHORT).show();
+                    break;
+                case -4:
+                    Toast.makeText(getActivity(), "删除Mark失败……", Toast.LENGTH_SHORT).show();
                     break;
             }
             mPtrFrameLayout.refreshComplete();
@@ -119,8 +143,7 @@ public class SharedFragment extends ListFragment implements  ICircleView {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
-        if(bundle != null)
-        {
+        if (bundle != null) {
             serviceUrl = bundle.getString("url");
         }
     }
@@ -144,7 +167,7 @@ public class SharedFragment extends ListFragment implements  ICircleView {
 
     private void initView() {
         StoreHouseHeader header = new StoreHouseHeader(getActivity());
-        header.setPadding(0,25,0,0);
+        header.setPadding(0, 25, 0, 0);
         header.initWithString(getWeekOfDay());//获得当前星期的字符串
 
         mPtrFrameLayout.setDurationToCloseHeader(2000);
@@ -156,7 +179,7 @@ public class SharedFragment extends ListFragment implements  ICircleView {
             public void run() {
                 mPtrFrameLayout.autoRefresh(false);
             }
-        },100);
+        }, 100);
 
         mPtrFrameLayout.setPtrHandler(new PtrHandler() {
             @Override
@@ -179,7 +202,6 @@ public class SharedFragment extends ListFragment implements  ICircleView {
         });
 
 
-
         mCircleLv.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -195,7 +217,7 @@ public class SharedFragment extends ListFragment implements  ICircleView {
 
 //        mAdapter = new CircleAdapter(getActivity());
 //        mAdapter.setCirclePresenter(mPresenter);
-       // mCircleLv.setAdapter(mAdapter);
+        // mCircleLv.setAdapter(mAdapter);
         sendIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -215,13 +237,13 @@ public class SharedFragment extends ListFragment implements  ICircleView {
         setViewTreeObserver();
     }
 
-    private String getWeekOfDay(){
-        Calendar calendar=Calendar.getInstance();
-        Date date=new Date();
+    private String getWeekOfDay() {
+        Calendar calendar = Calendar.getInstance();
+        Date date = new Date();
         calendar.setTime(date);
         int datOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
         if (datOfWeek < 0) {
-            datOfWeek=0;
+            datOfWeek = 0;
         }
         return mStringList[datOfWeek];
     }
@@ -236,10 +258,10 @@ public class SharedFragment extends ListFragment implements  ICircleView {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_posted:
-                CommonUtils.changeFrag(getActivity(),"posted_frag");
+                CommonUtils.changeFrag(getActivity(), "posted_frag");
                 break;
             case R.id.btn_focused:
-                CommonUtils.changeFrag(getActivity(),"focused_frag");
+                CommonUtils.changeFrag(getActivity(), "focused_frag");
                 break;
         }
     }
@@ -258,7 +280,7 @@ public class SharedFragment extends ListFragment implements  ICircleView {
     @Override
     public void update2AddFavorite(int circlePosition, likesPDM addItem) {
         if (addItem != null) {
-           DatasUtil.sMarksPDMs_public.get(circlePosition).getLikes().add(addItem);
+            DatasUtil.sMarksPDMs_public.get(circlePosition).getLikes().add(addItem);
             new addLike().execute(MainActivity.userId, DatasUtil.sMarksPDMs_public.get(circlePosition).getMarkId());
             mAdapter.notifyDataSetChanged();
         }
@@ -279,18 +301,18 @@ public class SharedFragment extends ListFragment implements  ICircleView {
     @Override
     public void update2AddComment(int circlePosition, commentsPDM addItem) {
         if (addItem != null) {
-           DatasUtil.sMarksPDMs_public.get(circlePosition).getComments().add(addItem);
             JSONObject object = new JSONObject();
             try {
                 object.put("userID", addItem.getFriendId());
-                object.put("markID", DatasUtil.sMarksPDMs_public.get(circlePosition).getMarkId());
+                object.put("markID", addItem.getMarkId());
                 object.put("content", addItem.getContent());
-            }catch (JSONException e)
-            {
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
             new addComment().execute(object);
+            DatasUtil.sMarksPDMs_public.get(circlePosition).getComments().add(addItem);
             mAdapter.notifyDataSetChanged();
+
         }
         //清空评论文本
         mEditText.setText("");
@@ -342,7 +364,7 @@ public class SharedFragment extends ListFragment implements  ICircleView {
         //这里如果你的listview上面还有其它占高度的控件，则需要减去该控件高度，listview的headview除外。
 
         int listviewOffset = mScreenHeight - mSelectCircleItemH - mCurrentKeyboardH -
-                mEditTextBodyHeight - getActivity().findViewById(R.id.toolbar).getHeight()-50;
+                mEditTextBodyHeight - getActivity().findViewById(R.id.toolbar).getHeight() - 50;
         if (commentConfig.commentType == CommentConfig.Type.REPLY) {
             //回复评论的情况
             listviewOffset = listviewOffset + mSelectCommentItemOffset;
@@ -427,6 +449,7 @@ public class SharedFragment extends ListFragment implements  ICircleView {
 
     /**
      * 获取状态栏高度
+     *
      * @return
      */
     private int getStatusBarHeight() {
@@ -462,18 +485,18 @@ public class SharedFragment extends ListFragment implements  ICircleView {
                 public void onFinishGetJson(JSONObject jsonObject) {
                     if (jsonObject != null) {
                         try {
-                            status =jsonObject.getString("status");
+                            status = jsonObject.getString("status");
                             info = jsonObject.getString("info");
-                            MarksjsonArray=jsonObject.getJSONArray("marks");////////////////////////这里是object还是listobject
+                            MarksjsonArray = jsonObject.getJSONArray("marks");////////////////////////这里是object还是listobject
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
-                    Message message=new Message();
+                    Message message = new Message();
                     if (status.equals("1") && info.equals("OK")) {
-                        message.what=1;
-                    }else{
-                        message.what=-1;
+                        message.what = 1;
+                    } else {
+                        message.what = -1;
                     }
                     handler.sendMessage(message);
                 }
@@ -486,7 +509,7 @@ public class SharedFragment extends ListFragment implements  ICircleView {
                 @Override
                 public void onError(Exception e) {
 //                    Log.e("SharedFrag", e.getMessage());
-                    status="0";
+                    status = "0";
                 }
             });
             return null;
@@ -503,14 +526,12 @@ public class SharedFragment extends ListFragment implements  ICircleView {
     }
 
     private void makeMarksList(JSONArray jsonArray) {//创建朋友圈列表
-        List<commentsPDM> commentsList=new ArrayList<>();
-        List<likesPDM> likesList=new ArrayList<>();
-       // List<MarksPDM> marksList = new ArrayList<>();
+        // List<MarksPDM> marksList = new ArrayList<>();
         DatasUtil.sMarksPDMs_public.clear();
-        for(int i=0;i<jsonArray.length();i++) {
+        for (int i = 0; i < jsonArray.length(); i++) {
             try {
                 JSONObject marksObject = jsonArray.getJSONObject(i);
-                Log.i("SharedFrag:"+i+":obj:", marksObject.toString());
+                Log.i("SharedFrag:" + i + ":obj:", marksObject.toString());
 
                 MarksPDM marksPDM = new MarksPDM();
                 marksPDM.setUserId(marksObject.getLong("userID"));
@@ -524,12 +545,14 @@ public class SharedFragment extends ListFragment implements  ICircleView {
                 marksPDM.setContent(marksObject.getString("content"));
                 marksPDM.setPhoto(marksObject.getString("photo"));
                 marksPDM.setAuthority(Authorities.values()[marksObject.getInt("authority")]);
+
                 JSONArray commentsObject = marksObject.getJSONArray("comments");
-                for(int j=0;j<commentsObject.length();j++) {
+                List<commentsPDM> commentsList = new ArrayList<>();
+                for (int j = 0; j < commentsObject.length(); j++) {
                     JSONObject comment = commentsObject.getJSONObject(j);
                     Log.i("SharedFrag:" + i + ":com:", comment.toString());
 
-                    commentsPDM commentsPDM=new commentsPDM();
+                    commentsPDM commentsPDM = new commentsPDM();
                     commentsPDM.setCommentId(comment.getLong("commentId"));
                     commentsPDM.setMarkId(comment.getLong("markID"));
                     commentsPDM.setFriendId(comment.getLong("friendID"));
@@ -538,8 +561,10 @@ public class SharedFragment extends ListFragment implements  ICircleView {
                     commentsPDM.setCommentTime(new Timestamp((long) comment.get("commentTime")));
                     commentsList.add(commentsPDM);
                 }
+
                 JSONArray likesObject = marksObject.getJSONArray("likes");
-                for (int k=0;k<likesObject.length();k++) {
+                List<likesPDM> likesList = new ArrayList<>();
+                for (int k = 0; k < likesObject.length(); k++) {
                     JSONObject like = likesObject.getJSONObject(k);
                     Log.i("SharedFrag:" + i + ":like:", like.toString());
 
@@ -552,7 +577,7 @@ public class SharedFragment extends ListFragment implements  ICircleView {
                 }
                 marksPDM.setComments(commentsList);
                 marksPDM.setLikes(likesList);
-               // marksList.add(marksPDM);
+
                 DatasUtil.sMarksPDMs_public.add(marksPDM);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -561,97 +586,11 @@ public class SharedFragment extends ListFragment implements  ICircleView {
     }
 
 
-    //============================================================================
-    //添加朋友关系
-//    private static final String serviceUrl="http://119.29.166.177:8080/createRelation";
-//    private Handler handler = new Handler(){
-//        public void handleMessage(Message msg) {
-//            switch (msg.what) {
-//                case 1:
-//                        Toast.makeText(getActivity(),"添加好友成功",Toast.LENGTH_SHORT).show();
-//                          getActivity().finish();//这里添加成功后直接结束活动也可以。
-//                    break;
-//                case -1:
-//                    Toast.makeText(getActivity(),"添加好友失败……",Toast.LENGTH_SHORT).show();
-//                    break;
-//            }
-//        }
-//    };
-
-    //    //这里需要传入userID 和 friendID  类型都为long。还有关系relation 好友关系为 0，
-//    // 方法：long friendID;
-//    //long userID;
-//
-//    JSONObject object = new JSONObject();
-//    object.put("userID", userID);
-//    object.put("markID", friendID);
-//    object.put("relation",0);
-
-//    //new addFriend().execute(object);//调用这个异步类的时候，直接把上面的jsonobject传入即可
-//    private class addFriend extends AsyncTask<JSONObject, Void, Void> {
-//        private String status;
-//        private String info;
-//        @Override
-//        protected Void doInBackground(JSONObject... params) {
-//
-//            HttpUtil.getJsonArrayByHttp(serviceUrl,params[0], new HttpCallbackListener() {
-//                @Override
-//                public void onFinishGetJson(JSONObject jsonObject) {
-//                    if (jsonObject == null) {
-//                        Log.i("status", "json:null");
-//                    } else if (jsonObject != null) {
-//                        try {
-//                            status = jsonObject.getString("status");
-//                            info = jsonObject.getString("info");
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                    Message message = new Message();
-//                    if (status.equals("1") && info.equals("OK")) {
-//                        message.what = 1;
-//                    } else {
-//                        message.what = -1;
-//                    }
-//                    handler.sendMessage(message);
-//                }
-//
-//                @Override
-//                public void onFinishGetString(String response) {
-//
-//                }
-//
-//                @Override
-//                public void onError(Exception e) {
-//                    Log.e("LoginFrag", e.getMessage());
-//                    status = "0";
-//                }
-//            });
-//            return null;
-//        }
-//    }
-
-
-
 
 
     //======================================================================================
     //添加评论的请求
-    private static final String serviceUrl_addcomment="http://119.29.166.177:8080/addComment";
-    private Handler handler_addcomment = new Handler(){
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 1:
-                        //这里加上在本地的添加朋友圈评论的事件就可以了
-                        Toast.makeText(getActivity(),"添加评论成功",Toast.LENGTH_SHORT).show();
-
-                    break;
-                case -1:
-                    Toast.makeText(getActivity(),"添加评论失败……",Toast.LENGTH_SHORT).show();
-                    break;
-            }
-        }
-    };
+    private static final String serviceUrl_addcomment = "http://119.29.166.177:8080/addComment";
 
     //    //这里需要传入userID 和 markID 还有String 评论，类型都为long。
 //    // 方法：long markID;
@@ -667,10 +606,11 @@ public class SharedFragment extends ListFragment implements  ICircleView {
     private class addComment extends AsyncTask<JSONObject, Void, Void> {
         private String status;
         private String info;
+
         @Override
         protected Void doInBackground(JSONObject... params) {
 
-            HttpUtil.getJsonArrayByHttp(serviceUrl_addcomment,params[0], new HttpCallbackListener() {
+            HttpUtil.getJsonArrayByHttp(serviceUrl_addcomment, params[0], new HttpCallbackListener() {
                 @Override
                 public void onFinishGetJson(JSONObject jsonObject) {
                     if (jsonObject == null) {
@@ -685,11 +625,11 @@ public class SharedFragment extends ListFragment implements  ICircleView {
                     }
                     Message message = new Message();
                     if (status.equals("1") && info.equals("OK")) {
-                        message.what = 1;
+                        message.what = 2;
                     } else {
-                        message.what = -1;
+                        message.what = -2;
                     }
-                    handler_addcomment.sendMessage(message);
+                    handler.sendMessage(message);
                 }
 
                 @Override
@@ -708,25 +648,9 @@ public class SharedFragment extends ListFragment implements  ICircleView {
     }
 
 
-
-
     //=======================================================================================
     //添加赞的请求
-    private static final String addlike_serviceUrl="http://119.29.166.177:8080/addLike";
-    private Handler addlike_handler = new Handler(){
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 1:
-                        //这里加上在本地的添加朋友圈赞的事件就可以了
-                        Toast.makeText(getActivity(),"添加赞成功",Toast.LENGTH_SHORT).show();
-
-                    break;
-                case -1:
-                    Toast.makeText(getActivity(),"添加赞失败……",Toast.LENGTH_SHORT).show();
-                    break;
-            }
-        }
-    };
+    private static final String addlike_serviceUrl = "http://119.29.166.177:8080/addLike";
 
     //这里需要传入userID 和 markID，类型都为long。
     // 方法：long markID;
@@ -735,16 +659,17 @@ public class SharedFragment extends ListFragment implements  ICircleView {
     private class addLike extends AsyncTask<Long, Void, Void> {
         private String status;
         private String info;
+
         @Override
         protected Void doInBackground(Long... params) {
             JSONObject object = new JSONObject();
             try {
-                object.put("userID",params[0]);//////记得参数的顺序不要弄乱了，第一个为userID，第二个为markID
+                object.put("userID", params[0]);//////记得参数的顺序不要弄乱了，第一个为userID，第二个为markID
                 object.put("markID", params[1]);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            HttpUtil.getJsonArrayByHttp(addlike_serviceUrl,object, new HttpCallbackListener() {
+            HttpUtil.getJsonArrayByHttp(addlike_serviceUrl, object, new HttpCallbackListener() {
                 @Override
                 public void onFinishGetJson(JSONObject jsonObject) {
                     if (jsonObject == null) {
@@ -759,11 +684,11 @@ public class SharedFragment extends ListFragment implements  ICircleView {
                     }
                     Message message = new Message();
                     if (status.equals("1") && info.equals("OK")) {
-                        message.what = 1;
+                        message.what = 3;
                     } else {
-                        message.what = -1;
+                        message.what = -3;
                     }
-                    addlike_handler.sendMessage(message);
+                    handler.sendMessage(message);
                 }
 
                 @Override
@@ -783,27 +708,13 @@ public class SharedFragment extends ListFragment implements  ICircleView {
 
     //======================================================================================
     //删除朋友圈的一条
-    private static final String serviceUrl_deleteMark="http://119.29.166.177:8080/deleteMark";
-    private Handler handler_deleteMark = new Handler(){
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 1:
-                        //这里加上在本地的删除朋友圈的事件就可以了
-                        mAdapter.notifyDataSetChanged();//这里可以改善
-                        Toast.makeText(getActivity(),"删除朋友圈成功",Toast.LENGTH_SHORT).show();
+    private static final String serviceUrl_deleteMark = "http://119.29.166.177:8080/deleteMark";
 
-                    break;
-                case -1:
-                    Toast.makeText(getActivity(),"删除朋友圈失败……",Toast.LENGTH_SHORT).show();
-                    break;
-            }
-        }
-    };
-
-//    //这里需要传入markID，类型为long。 方法：new deleteMark().execute(markId);
+    //    //这里需要传入markID，类型为long。 方法：new deleteMark().execute(markId);
     private class deleteMark extends AsyncTask<Long, Void, Void> {
         private String status;
         private String info;
+
         @Override
         protected Void doInBackground(Long... params) {
             JSONObject object = new JSONObject();
@@ -812,7 +723,7 @@ public class SharedFragment extends ListFragment implements  ICircleView {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            HttpUtil.getJsonArrayByHttp(serviceUrl_deleteMark,object, new HttpCallbackListener() {
+            HttpUtil.getJsonArrayByHttp(serviceUrl_deleteMark, object, new HttpCallbackListener() {
                 @Override
                 public void onFinishGetJson(JSONObject jsonObject) {
                     if (jsonObject == null) {
@@ -827,11 +738,11 @@ public class SharedFragment extends ListFragment implements  ICircleView {
                     }
                     Message message = new Message();
                     if (status.equals("1") && info.equals("OK")) {
-                        message.what = 1;
+                        message.what = 4;
                     } else {
-                        message.what = -1;
+                        message.what = -4;
                     }
-                    handler_deleteMark.sendMessage(message);
+                    handler.sendMessage(message);
                 }
 
                 @Override

@@ -101,9 +101,10 @@ public class CirclePresenter {
         mCircleModel.addComment(new IDataRequestListener() {
 
             @Override
-            public void loadSuccess(Object object) {//这里暂时没想到如何去获取MarkId，不影响添加但影响删除
-                commentsPDM newItem = new commentsPDM(651651, 35,MainActivity.userId,MainActivity.userName,content,new Timestamp(System.currentTimeMillis()));
-
+            public void loadSuccess(Object object) {
+                commentsPDM newItem = new commentsPDM(DatasUtil.sMarksPDMs_public.get(config.circlePosition).getMarkId(),
+                        MainActivity.userId,MainActivity.userName,content,new Timestamp(System.currentTimeMillis()));
+//                public commentsPDM(long markId, long friendId, String friendName, String content, Timestamp commentTime)
 //                if (config.commentType == CommentConfig.Type.PUBLIC) {
 //                    newItem = DatasUtil.createPublicComment(content);
 //                } else if (config.commentType == CommentConfig.Type.REPLY) {

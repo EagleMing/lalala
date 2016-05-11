@@ -124,7 +124,6 @@ public class CircleAdapter extends BaseAdapter {
         }
 
         MarksPDM circleItem = DatasUtil.sMarksPDMs_public.get(position);
-        //CircleItem circleItem = datas.get(position);
         final long markId = circleItem.getMarkId();
         final Bitmap headImg = circleItem.getIcon();
         final Bitmap mainImg = circleItem.getPhoto();
@@ -136,9 +135,12 @@ public class CircleAdapter extends BaseAdapter {
         boolean hasComment = circleItem.hasComment();
 
         holder.headIv.setImageBitmap(headImg);
-        holder.imageView.setImageBitmap(mainImg);
+//        holder.imageView.setImageBitmap(mainImg);
 //        ImageLoader.getInstance().displayImage(headImg, holder.headIv);
-//        ImageLoader.getInstance().displayImage(mainImg, holder.imageView);//????
+//        ImageLoader.getInstance().displayImage(mainImg, holder.imageView);
+//        ImageLoader.getInstance().displayImage(DatasUtil.PHOTOS[(int)Math.random()*DatasUtil.PHOTOS.length], holder.imageView);
+        ImageLoader.getInstance().displayImage(DatasUtil.PHOTOS[5], holder.imageView);
+
         holder.nameTv.setText(circleItem.getUserName());
         holder.timeTv.setText(createTime);
         holder.contentTv.setText(content);
