@@ -303,7 +303,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener,
 
     //============================================================================
     //添加朋友关系
-    private static final String serviceUrl_addfriend = "http://119.29.166.177:8080/createRelation";
+    private static final String serviceUrl_addfriend = "http://119.29.166.177:8080/createRelationByEmail";
 
 
     //这里需要传入userID 和 friendID  类型都为long。还有关系relation 好友关系为 0，
