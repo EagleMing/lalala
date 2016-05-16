@@ -141,8 +141,8 @@ public class CircleAdapter extends BaseAdapter {
 //        ImageLoader.getInstance().displayImage(mainImg, holder.imageView);
         DisplayImageOptions options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.basic_skin_icon_dot_gray)
-                .showImageOnFail(R.drawable.headportrait_nina)
-                .showImageForEmptyUri(R.drawable.head)
+//                .showImageOnFail(R.drawable.headportrait_nina)
+//                .showImageForEmptyUri(R.drawable.head)
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
