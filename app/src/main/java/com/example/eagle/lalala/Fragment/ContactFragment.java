@@ -20,8 +20,10 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.HeaderViewListAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SectionIndexer;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,8 +56,9 @@ public class ContactFragment extends Fragment implements View.OnClickListener,
     private SideBar indexBar;
     private TextView mDialogText;
     private WindowManager mWindowManager;
+    private ContactAdapter mContactAdapter;
 
-    private static final String serviceUrl = "http://119.29.166.177:8080/getFriends";
+    private static final String serviceUrl =  "http://119.29.198.149:8080/getFriends";
     private ProgressDialog progressDialog;
     private JSONArray friendsJson;
 
@@ -64,9 +67,11 @@ public class ContactFragment extends Fragment implements View.OnClickListener,
             progressDialog.dismiss();
             switch (msg.what) {
                 case 1:
-                    Toast.makeText(getActivity(), "加载成功！", Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(getActivity(), "加载成功！", Toast.LENGTH_SHORT).show();
                     if (friendsJson.length() == 0) {
                         Toast.makeText(getActivity(), "朋友为空！", Toast.LENGTH_SHORT).show();
+                        mContactAdapter = new ContactAdapter(getActivity(),DatasUtil.sFriendsPDMs);
+                        lvContact.setAdapter(mContactAdapter);
                     } else {
                         Log.i("ContactFrag::friends:", friendsJson.toString());
                         makefriendslist(friendsJson);
@@ -75,8 +80,12 @@ public class ContactFragment extends Fragment implements View.OnClickListener,
                 case -1:
                     Toast.makeText(getActivity(), "加载失败！", Toast.LENGTH_SHORT).show();
                     break;
+
                 case 4:
-                    Toast.makeText(getActivity(), "添加好友成功", Toast.LENGTH_SHORT).show();
+                  //  Toast.makeText(getActivity(), "添加好友成功", Toast.LENGTH_SHORT).show();
+                    //refresh();
+                    //mContactAdapter.notifyDataSetChanged();
+                    new getContact().execute();
                     break;
                 case -4:
                     Toast.makeText(getActivity(), "添加好友失败", Toast.LENGTH_SHORT).show();
@@ -152,8 +161,10 @@ public class ContactFragment extends Fragment implements View.OnClickListener,
     private void initData() {
 //        lvContact.setAdapter(new ContactAdapter(getActivity(),
 //                DatasUtil.getUsers()));
+
         new getContact().execute();
-        lvContact.setAdapter(new ContactAdapter(getActivity(),DatasUtil.sFriendsPDMs));
+//        mContactAdapter = new ContactAdapter(getActivity(),DatasUtil.sFriendsPDMs);
+//        lvContact.setAdapter(mContactAdapter);
     }
 
     private void setOnListener() {
@@ -198,9 +209,9 @@ public class ContactFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-        User user = DatasUtil.getUsers().get(arg2 - 1);
+        FriendPDM friendPDM = DatasUtil.sFriendsPDMs.get(arg2 - 1);
 //        User user = DatasUtil.getUsers().get(arg2 );
-        Toast.makeText(getActivity(), user.getName(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), friendPDM.getUserName(), Toast.LENGTH_SHORT).show();
 
 
 //        if (user != null) {
@@ -216,6 +227,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener,
     }
 
     private void makefriendslist(JSONArray array) { //制作好友列表
+        DatasUtil.sFriendsPDMs.clear();
         for (int i = 0; i < array.length(); i++) {
             try {
                 JSONObject object = array.getJSONObject(i);
@@ -230,6 +242,14 @@ public class ContactFragment extends Fragment implements View.OnClickListener,
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+        if(mContactAdapter == null) {
+            mContactAdapter = new ContactAdapter(getActivity(), DatasUtil.sFriendsPDMs);
+            lvContact.setAdapter(mContactAdapter);
+        }
+        else
+        {
+            mContactAdapter.notifyDataSetChanged();
         }
     }
 
@@ -303,7 +323,7 @@ public class ContactFragment extends Fragment implements View.OnClickListener,
 
     //============================================================================
     //添加朋友关系
-    private static final String serviceUrl_addfriend = "http://119.29.166.177:8080/createRelationByEmail";
+    private static final String serviceUrl_addfriend = "http://119.29.198.149:8080/createRelationByEmail";
 
 
     //这里需要传入userID 和 friendID  类型都为long。还有关系relation 好友关系为 0，

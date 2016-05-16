@@ -73,7 +73,7 @@ public class MapFragment extends Fragment implements LocationSource,
 
     private ArrayList<MarkItemResponse> markItems = new ArrayList<>();
     private ArrayList<Marker> markers = new ArrayList<>();
-    private static final String serviceUrl="http://119.29.166.177:8080/getAroundMarks";
+    private static final String serviceUrl="http://119.29.198.149:8080/getAroundMarks";
     private JSONArray MarksjsonArray;
 //    private Marker marker;
 //    private ArrayList<Marker> markersList=new ArrayList<Marker>();

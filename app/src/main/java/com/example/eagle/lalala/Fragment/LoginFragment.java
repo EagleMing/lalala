@@ -46,7 +46,7 @@ import butterknife.OnClick;
  */
 public class LoginFragment extends Fragment {
 
-    private static final String serviceUrl="http://119.29.166.177:8080/login";
+    private static final String serviceUrl="http://119.29.198.149:8080/login";
     private ConveyJson userJson;  //为了传递json而创立的类
 
     @Bind(R.id.input_login_email)
@@ -264,9 +264,9 @@ public class LoginFragment extends Fragment {
             return;//或者需要其他提示信息？
         }
 
-        if(requestCode == REQUEST_SIGNUP){
-            Toast.makeText(getActivity(), "请登陆注册邮箱验证完成注册", Toast.LENGTH_SHORT).show();
-        }
+//        if(requestCode == REQUEST_SIGNUP){
+//            Toast.makeText(getActivity(), "请登陆注册邮箱验证完成注册", Toast.LENGTH_SHORT).show();
+//        }
     }
 
     private class LoginIn extends AsyncTask<JSONObject,Void,String> {

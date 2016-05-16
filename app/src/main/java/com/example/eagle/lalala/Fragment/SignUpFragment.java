@@ -34,7 +34,7 @@ import butterknife.OnClick;
  */
 public class SignUpFragment extends Fragment {
 
-    private static final String serviceUrl="http://119.29.166.177:8080/signUp";
+    private static final String serviceUrl="http://119.29.198.149:8080/signUp";
     private ProgressDialog progressDialog;
 
     private Handler handler = new Handler(){

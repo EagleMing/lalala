@@ -44,7 +44,7 @@ import java.util.ArrayList;
  */
 public class Edit_marks_aty extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String serviceUrl="http://119.29.166.177:8080/createMark";
+    private static final String serviceUrl="http://119.29.198.149:8080/createMark";
     private static final long userId= MainActivity.userId;//用户的id
     public static final int PICK_PHOTO=2;
     private static final int AUTHORITY_PUBLIC=0;
@@ -266,7 +266,7 @@ public class Edit_marks_aty extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.imageBtn_editmark:
-                Toast.makeText(Edit_marks_aty.this,"onOptionsItemSelected",Toast.LENGTH_SHORT).show();
+               // Toast.makeText(Edit_marks_aty.this,"onOptionsItemSelected",Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent("android.intent.action.GET_CONTENT");
                 intent.setType("image/*");
                 startActivityForResult(intent,PICK_PHOTO);//打开相册

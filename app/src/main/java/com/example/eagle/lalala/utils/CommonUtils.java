@@ -49,12 +49,12 @@ public class CommonUtils {
             switch (toTag)
             {
                 case "posted_frag":
-                    bundle.putString("url","http://119.29.166.177:8080/getMyMarks");
+                    bundle.putString("url","http://119.29.198.149:8080/getMyMarks");
                     temp.setArguments(bundle);
                     transaction.hide(from).add(R.id.single_frag_container,temp,toTag).commit();
                     break;
                 case "focused_frag":
-                    bundle.putString("url","http://119.29.166.177:8080/getUpdatedMarks");
+                    bundle.putString("url","http://119.29.198.149:8080/getUpdatedMarks");
                     temp.setArguments(bundle);
                     transaction.hide(from).add(R.id.single_frag_container,temp,toTag).commit();
                     break;

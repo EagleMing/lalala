@@ -64,11 +64,13 @@ import butterknife.OnClick;
 /**
  * Created by eagle on 2016/4/9.
  */
-public class SharedFragment extends ListFragment implements  ICircleView {
+public class SharedFragment extends ListFragment implements ICircleView {
 
     private String serviceUrl;
+    private static final String serviceUrl_deleteLike ="http://119.29.198.149:8080/deleteLike";
+    private static final String serviceUrl_deleteComment ="http://119.29.198.149:8080/deleteComment";
 
-    private String[] mStringList={"WeMark Sun.","WeMark Mon.","WeMark Tues.","WeMark Wed.","WeMark Thur.","WeMark Fri.","WeMark Sat."};
+    private String[] mStringList = {"WeMark Sun.", "WeMark Mon.", "WeMark Tues.", "WeMark Wed.", "WeMark Thur.", "WeMark Fri.", "WeMark Sat."};
 
 
     ListView mCircleLv;
@@ -86,6 +88,7 @@ public class SharedFragment extends ListFragment implements  ICircleView {
     @Override
     public void onResume() {
         super.onResume();
+        new FreshMarks().execute();
         mAdapter.notifyDataSetChanged();
     }
 
@@ -96,7 +99,7 @@ public class SharedFragment extends ListFragment implements  ICircleView {
                     if (MarksjsonArray != null) {//不知道用jsonArray去接受的话，会报错，先调试用jsonobject去接收，等我找出原因先。
                         makeMarksList(MarksjsonArray);
 //                        Log.i("SharedFrag:Array::", MarksjsonArray.toString());
-                        Toast.makeText(getActivity(), "刷新Marks成功", Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(getActivity(), "刷新Marks成功", Toast.LENGTH_SHORT).show();
                         mCircleLv.setAdapter(mAdapter);
                         mAdapter.notifyDataSetChanged();
                     }
@@ -105,22 +108,36 @@ public class SharedFragment extends ListFragment implements  ICircleView {
                     Toast.makeText(getActivity(), "刷新Marks失败……", Toast.LENGTH_SHORT).show();
                     break;
                 case 2:
-                    Toast.makeText(getActivity(), "评论成功", Toast.LENGTH_SHORT).show();
+                  //  Toast.makeText(getActivity(), "评论成功", Toast.LENGTH_SHORT).show();
                     break;
                 case -2:
                     Toast.makeText(getActivity(), "评论失败……", Toast.LENGTH_SHORT).show();
                     break;
                 case 3:
-                    Toast.makeText(getActivity(), "点赞成功", Toast.LENGTH_SHORT).show();
+                 //   Toast.makeText(getActivity(), "点赞成功", Toast.LENGTH_SHORT).show();
                     break;
                 case -3:
                     Toast.makeText(getActivity(), "点赞失败……", Toast.LENGTH_SHORT).show();
                     break;
                 case 4:
-                    Toast.makeText(getActivity(), "删除Mark成功", Toast.LENGTH_SHORT).show();
+                 //   Toast.makeText(getActivity(), "删除Mark成功", Toast.LENGTH_SHORT).show();
+                    mAdapter.notifyDataSetChanged();
                     break;
                 case -4:
                     Toast.makeText(getActivity(), "删除Mark失败……", Toast.LENGTH_SHORT).show();
+                    break;
+                case 5:
+                //    Toast.makeText(getActivity(), "删除评论成功", Toast.LENGTH_SHORT).show();
+                    break;
+                case -5:
+                    Toast.makeText(getActivity(), "删除评论失败……", Toast.LENGTH_SHORT).show();
+                    break;
+                case 6:
+                //    Toast.makeText(getActivity(), "删除赞成功", Toast.LENGTH_SHORT).show();
+                    mAdapter.notifyDataSetChanged();
+                    break;
+                case -6:
+                    Toast.makeText(getActivity(), "删除赞失败……", Toast.LENGTH_SHORT).show();
                     break;
             }
             mPtrFrameLayout.refreshComplete();
@@ -201,7 +218,6 @@ public class SharedFragment extends ListFragment implements  ICircleView {
         });
 
 
-
         mCircleLv.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -217,7 +233,7 @@ public class SharedFragment extends ListFragment implements  ICircleView {
 
 //        mAdapter = new CircleAdapter(getActivity());
 //        mAdapter.setCirclePresenter(mPresenter);
-       // mCircleLv.setAdapter(mAdapter);
+        // mCircleLv.setAdapter(mAdapter);
         sendIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -257,11 +273,11 @@ public class SharedFragment extends ListFragment implements  ICircleView {
     @OnClick({R.id.btn_posted, R.id.btn_focused})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btn_posted:
-                CommonUtils.changeFrag(getActivity(), "posted_frag");
-                break;
             case R.id.btn_focused:
                 CommonUtils.changeFrag(getActivity(), "focused_frag");
+                break;
+            case R.id.btn_posted:
+                CommonUtils.changeFrag(getActivity(), "posted_frag");
                 break;
         }
     }
@@ -288,6 +304,7 @@ public class SharedFragment extends ListFragment implements  ICircleView {
 
     @Override
     public void update2DeleteFavort(int circlePosition, long favortId) {
+        new deleteLike().execute(favortId);
         List<likesPDM> items = DatasUtil.sMarksPDMs_public.get(circlePosition).getLikes();
         for (int i = 0; i < items.size(); i++) {
             if (favortId == items.get(i).getUserId()) {
@@ -310,6 +327,7 @@ public class SharedFragment extends ListFragment implements  ICircleView {
                 e.printStackTrace();
             }
             new addComment().execute(object);
+            addItem.setCommentId(commentId);
             DatasUtil.sMarksPDMs_public.get(circlePosition).getComments().add(addItem);
             mAdapter.notifyDataSetChanged();
 
@@ -328,6 +346,16 @@ public class SharedFragment extends ListFragment implements  ICircleView {
 //                return;
 //            }
 //        }
+        new deleteComment().execute(commentId);
+        List<commentsPDM> items = DatasUtil.sMarksPDMs_public.get(circlePosition).getComments();
+        for (int i = 0; i < items.size(); i++) {
+            if (commentId == items.get(i).getCommentId()) {
+                items.remove(i);
+                mAdapter.notifyDataSetChanged();
+                return;
+            }
+        }
+
     }
 
     @Override
@@ -586,11 +614,9 @@ public class SharedFragment extends ListFragment implements  ICircleView {
     }
 
 
-
-
     //======================================================================================
     //添加评论的请求
-    private static final String serviceUrl_addcomment = "http://119.29.166.177:8080/addComment";
+    private static final String serviceUrl_addcomment = "http://119.29.198.149:8080/addComment";
 
     //    //这里需要传入userID 和 markID 还有String 评论，类型都为long。
 //    // 方法：long markID;
@@ -601,8 +627,9 @@ public class SharedFragment extends ListFragment implements  ICircleView {
 //    object.put("markID", markID);
 //    object.put("content",content);
 
-//    //new addComment().execute(object);//调用这个异步类的时候，直接把上面的jsonobject传入即可
+    //    //new addComment().execute(object);//调用这个异步类的时候，直接把上面的jsonobject传入即可
     long commentId; //评论的id
+
     private class addComment extends AsyncTask<JSONObject, Void, Void> {
         private String status;
         private String info;
@@ -651,12 +678,15 @@ public class SharedFragment extends ListFragment implements  ICircleView {
 
     //=======================================================================================
     //添加赞的请求
-    private static final String addlike_serviceUrl = "http://119.29.166.177:8080/addLike";
+    private static final String addlike_serviceUrl ="http://119.29.198.149:8080/addLike";
 
     //这里需要传入userID 和 markID，类型都为long。
     // 方法：long markID;
     //long userID;
     //new addLike().execute(userID, markID);
+
+    long likeId;
+
     private class addLike extends AsyncTask<Long, Void, Void> {
         private String status;
         private String info;
@@ -710,7 +740,7 @@ public class SharedFragment extends ListFragment implements  ICircleView {
 
     //======================================================================================
     //删除朋友圈的一条
-    private static final String serviceUrl_deleteMark = "http://119.29.166.177:8080/deleteMark";
+    private static final String serviceUrl_deleteMark = "http://119.29.198.149:8080/deleteMark";
 
     //    //这里需要传入markID，类型为long。 方法：new deleteMark().execute(markId);
     private class deleteMark extends AsyncTask<Long, Void, Void> {
@@ -761,75 +791,107 @@ public class SharedFragment extends ListFragment implements  ICircleView {
             return null;
         }
     }
+
+
+
+
+    private class deleteComment extends AsyncTask<Long, Void, Void> {
+        private String status;
+        private String info;
+
+        @Override
+        protected Void doInBackground(Long... params) {
+            JSONObject object = new JSONObject();
+            try {
+                object.put("id", params[0]);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            HttpUtil.getJsonArrayByHttp(serviceUrl_deleteComment, object, new HttpCallbackListener() {
+                @Override
+                public void onFinishGetJson(JSONObject jsonObject) {
+                    if (jsonObject == null) {
+                        Log.i("status", "json:null");
+                    } else if (jsonObject != null) {
+                        try {
+                            status = jsonObject.getString("status");
+                            info = jsonObject.getString("info");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    Message message = new Message();
+                    if (status.equals("1") && info.equals("OK")) {
+                        message.what = 5;
+                    } else {
+                        message.what = -5;
+                    }
+                    handler.sendMessage(message);
+                }
+
+                @Override
+                public void onFinishGetString(String response) {
+
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.e("LoginFrag", e.getMessage());
+                    status = "0";
+                }
+            });
+            return null;
+        }
+    }
+    private class deleteLike extends AsyncTask<Long, Void, Void> {
+        private String status;
+        private String info;
+
+        @Override
+        protected Void doInBackground(Long... params) {
+            JSONObject object = new JSONObject();
+            try {
+                object.put("id", params[0]);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            HttpUtil.getJsonArrayByHttp(serviceUrl_deleteLike, object, new HttpCallbackListener() {
+                @Override
+                public void onFinishGetJson(JSONObject jsonObject) {
+                    if (jsonObject == null) {
+                        Log.i("status", "json:null");
+                    } else if (jsonObject != null) {
+                        try {
+                            status = jsonObject.getString("status");
+                            info = jsonObject.getString("info");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    Message message = new Message();
+                    if (status.equals("1") && info.equals("OK")) {
+                        message.what = 6;
+                    } else {
+                        message.what = -6;
+                    }
+                    handler.sendMessage(message);
+                }
+
+                @Override
+                public void onFinishGetString(String response) {
+
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.e("LoginFrag", e.getMessage());
+                    status = "0";
+                }
+            });
+            return null;
+        }
+    }
+
 }
 
 
-//===============================================================================
-//删除评论
-//private static final String serviceUrl_deleteLike="http://119.29.166.177:8080/deleteLike";
-//private static final String serviceUrl_deleteComment="http://119.29.166.177:8080/deleteComment";
-//private Handler handler_deleteMark = new Handler(){
-//    public void handleMessage(Message msg) {
-//        switch (msg.what) {
-//            case 1:
-//                //这里加上在本地的删除评论的事件就可以了
-//                mAdapter.notifyDataSetChanged();//这里可以改善
-//                Toast.makeText(getActivity(),"删除评论成功",Toast.LENGTH_SHORT).show();
-//
-//                break;
-//            case -1:
-//                Toast.makeText(getActivity(),"删除评论失败……",Toast.LENGTH_SHORT).show();
-//                break;
-//        }
-//    }
-//};
-// String servicePath=serviceUrl_deleteLike 或者 serviceUrl_deleteComment;
-//        JSONObject idObject = new JSONObject();
-//try {
-//            idObject.put("id", 赞的id或者评论的id);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-////    //这里需要传入 评论或者赞的id，类型为long。 方法：new deleteCommentorLike().execute(servicePath);
-//private class deleteMark extends AsyncTask<String, Void, Void> {
-//    private String status;
-//    private String info;
-//    @Override
-//    protected Void doInBackground(String... params) {
-//
-//        HttpUtil.getJsonArrayByHttp(params[0],idObject, new HttpCallbackListener() {
-//            @Override
-//            public void onFinishGetJson(JSONObject jsonObject) {
-//                if (jsonObject == null) {
-//                    Log.i("status", "json:null");
-//                } else if (jsonObject != null) {
-//                    try {
-//                        status = jsonObject.getString("status");
-//                        info = jsonObject.getString("info");
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//                Message message = new Message();
-//                if (status.equals("1") && info.equals("OK")) {
-//                    message.what = 1;
-//                } else {
-//                    message.what = -1;
-//                }
-//                handler_deleteMark.sendMessage(message);
-//            }
-//
-//            @Override
-//            public void onFinishGetString(String response) {
-//
-//            }
-//
-//            @Override
-//            public void onError(Exception e) {
-//                Log.e("LoginFrag", e.getMessage());
-//                status = "0";
-//            }
-//        });
-//        return null;
-//    }
-//}

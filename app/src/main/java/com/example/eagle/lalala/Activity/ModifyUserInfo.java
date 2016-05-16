@@ -52,7 +52,7 @@ import java.util.HashMap;
  */
 public class ModifyUserInfo extends AppCompatActivity implements View.OnClickListener,DialogEditUserString.EditInputListener {
 
-    private static final String serviceUrl="http://119.29.166.177:8080/updateUser";
+    private static final String serviceUrl="http://119.29.198.149:8080/updateUser";
 
     private LinearLayout iconLayout;
     private LinearLayout nickNameLayout;

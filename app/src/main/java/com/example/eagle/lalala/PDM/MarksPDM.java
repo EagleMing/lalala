@@ -25,7 +25,7 @@ public class MarksPDM {
     private String positionName;
     private String address;
     private String content;
-    private Bitmap photo;
+    private String photo;
     private List<commentsPDM> comments;
     private List<likesPDM> likes;
 
@@ -43,7 +43,7 @@ public class MarksPDM {
         this.positionName = positionName;
         this.address = address;
         this.content = content;
-        this.photo = HandlePicture.StringToBitmap(photo);
+        this.photo = photo;
         this.authority = authority;
         this.comments = comments;
         this.likes = likes;
@@ -143,12 +143,12 @@ public class MarksPDM {
         this.content = content;
     }
 
-    public Bitmap getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 
     public void setPhoto(String photo) {
-        this.photo = HandlePicture.StringToBitmap(photo);
+        this.photo = photo;
     }
 
     public Authorities getAuthority() {

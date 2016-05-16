@@ -68,7 +68,7 @@ public class HandlePicture  {
     }
 
     /**
-     * 把bitmap转换成String
+     * 把String转换成Bitmap
      *
      * @param filePath
      * @return
@@ -85,7 +85,7 @@ public class HandlePicture  {
     }
 
     /**
-     * 把bitmap转换成String
+     * 把Bitmap转换成String
      *
      * @param bitmap
      * @return

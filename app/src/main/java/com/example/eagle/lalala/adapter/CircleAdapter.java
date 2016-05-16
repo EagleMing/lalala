@@ -24,8 +24,6 @@ import com.example.eagle.lalala.R;
 import com.example.eagle.lalala.bean.ActionItem;
 import com.example.eagle.lalala.bean.CircleItem;
 import com.example.eagle.lalala.bean.CommentConfig;
-import com.example.eagle.lalala.bean.CommentItem;
-import com.example.eagle.lalala.bean.FavortItem;
 import com.example.eagle.lalala.mvp.presenter.CirclePresenter;
 import com.example.eagle.lalala.spannable.ISpanClick;
 import com.example.eagle.lalala.utils.DatasUtil;
@@ -35,9 +33,11 @@ import com.example.eagle.lalala.widgets.FavortListView;
 import com.example.eagle.lalala.widgets.MultiImageView;
 import com.example.eagle.lalala.widgets.SnsPopupWindow;
 import com.example.eagle.lalala.widgets.dialog.CommentDialog;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -126,7 +126,8 @@ public class CircleAdapter extends BaseAdapter {
         MarksPDM circleItem = DatasUtil.sMarksPDMs_public.get(position);
         final long markId = circleItem.getMarkId();
         final Bitmap headImg = circleItem.getIcon();
-        final Bitmap mainImg = circleItem.getPhoto();
+        //final Bitmap mainImg = circleItem.getPhoto();
+        final String mainImg = "http://119.29.198.149:8080/"+circleItem.getPhoto();
         String content = circleItem.getContent();
         String createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(circleItem.getCreateTime());
         final List<likesPDM> favortDatas = circleItem.getLikes();
@@ -138,8 +139,17 @@ public class CircleAdapter extends BaseAdapter {
 //        holder.imageView.setImageBitmap(mainImg);
 //        ImageLoader.getInstance().displayImage(headImg, holder.headIv);
 //        ImageLoader.getInstance().displayImage(mainImg, holder.imageView);
-//        ImageLoader.getInstance().displayImage(DatasUtil.PHOTOS[(int)Math.random()*DatasUtil.PHOTOS.length], holder.imageView);
-        ImageLoader.getInstance().displayImage(DatasUtil.PHOTOS[5], holder.imageView);
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .showImageOnLoading(R.drawable.basic_skin_icon_dot_gray)
+                .showImageOnFail(R.drawable.headportrait_nina)
+                .showImageForEmptyUri(R.drawable.head)
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .build();
+        ImageLoader.getInstance().displayImage(mainImg, holder.imageView,options);
+//        ImageLoader.getInstance().displayImage(DatasUtil.PHOTOS[(int)Math.random()*DatasUtil.PHOTOS.length], holder.imageView,options);
+//        ImageLoader.getInstance().displayImage(DatasUtil.PHOTOS[5], holder.imageView);
 
         holder.nameTv.setText(circleItem.getUserName());
         holder.timeTv.setText(createTime);

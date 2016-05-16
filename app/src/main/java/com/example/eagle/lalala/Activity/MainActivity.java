@@ -355,7 +355,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         protected void onPostExecute(String str) {
             progressDialog.dismiss();
 //            unbindService(connection);
-            Toast.makeText(MainActivity.this, "初始化成功", Toast.LENGTH_LONG).show();
+ //           Toast.makeText(MainActivity.this, "初始化成功", Toast.LENGTH_LONG).show();
         }
     }
 

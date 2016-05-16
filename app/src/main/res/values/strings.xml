@@ -10,6 +10,10 @@
     <string name="login">登陆</string>
     <string name="password">密码</string>
     <string name="repeatPassword">重复密码</string>
+    <!--gunaling-->
+    <string name="hostname">http://119.29.198.149:8080/</string>
+
+    <!--<string name="hostname">http://119.29.166.177:8080/</string>-->
     <string name="account">邮箱账号</string>
     <string name="nickname">昵称</string>
     <string name="receive_email">确认注册</string>
