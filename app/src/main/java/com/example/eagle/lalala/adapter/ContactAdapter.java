@@ -12,6 +12,7 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 
+import com.example.eagle.lalala.PDM.FriendPDM;
 import com.example.eagle.lalala.bean.User;
 import com.example.eagle.lalala.utils.MyViewHolder;
 import com.example.eagle.lalala.utils.PingYinUtil;
@@ -26,9 +27,9 @@ import java.util.List;
 
 public class ContactAdapter extends BaseAdapter implements SectionIndexer {
 	private Context mContext;
-	private List<User> UserInfos;// 好友信息
+	private List<FriendPDM> UserInfos;// 好友信息
 
-	public ContactAdapter(Context mContext, List<User> UserInfos) {
+	public ContactAdapter(Context mContext, List<FriendPDM> UserInfos) {
 		this.mContext = mContext;
 		this.UserInfos = UserInfos;
 		// 排序(实现了中英文混排)
@@ -52,7 +53,7 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		User user = UserInfos.get(position);
+		FriendPDM user = UserInfos.get(position);
 		if (convertView == null) {
 			convertView = LayoutInflater.from(mContext).inflate(
 					R.layout.contact_item, null);
@@ -63,15 +64,15 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
 		TextView tvCatalog = MyViewHolder.get(convertView,
 				R.id.contactitem_catalog);
 		TextView tvNick = MyViewHolder.get(convertView, R.id.contactitem_nick);
-		char catalog = PingYinUtil.converterToFirstSpell(user.getName()).substring(0,1).toUpperCase()
+		char catalog = PingYinUtil.converterToFirstSpell(user.getUserName()).substring(0,1).toUpperCase()
 				.charAt(0);
 		if (position == 0) {
 			tvCatalog.setVisibility(View.VISIBLE);
 			tvCatalog.setText(String.valueOf(catalog));
 		} else {
-			User Nextuser = UserInfos.get(position - 1);
+			FriendPDM Nextuser = UserInfos.get(position - 1);
 			char lastCatalog = PingYinUtil.converterToFirstSpell(
-					Nextuser.getName()).substring(0,1).toUpperCase().charAt(0);
+					Nextuser.getUserName()).substring(0,1).toUpperCase().charAt(0);
 			if (catalog == lastCatalog) {
 				tvCatalog.setVisibility(View.GONE);
 			} else {
@@ -82,18 +83,16 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
 
 
 
-		ImageLoader.getInstance().displayImage(user.getHeadUrl(),ivAvatar);
-//		ivAvatar.setImageURI(user.getHeadUrl());
-//		ivAvatar.setImageResource(R.drawable.head);
-		tvNick.setText(user.getName());
+		ivAvatar.setImageBitmap(user.getIcon());
+		tvNick.setText(user.getUserName());
 		return convertView;
 	}
 
 	@Override
 	public int getPositionForSection(int section) {
 		for (int i = 0; i < UserInfos.size(); i++) {
-			User user = UserInfos.get(i);
-			String l = PingYinUtil.converterToFirstSpell(user.getName())
+			FriendPDM user = UserInfos.get(i);
+			String l = PingYinUtil.converterToFirstSpell(user.getUserName())
 					.substring(0, 1);
 			char firstChar = l.toUpperCase().charAt(0);
 			if (firstChar == section) {

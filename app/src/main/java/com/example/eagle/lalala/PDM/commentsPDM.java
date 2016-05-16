@@ -16,8 +16,8 @@ public class commentsPDM {
     public commentsPDM() {
     }
 
-    public commentsPDM(long commentId, long markId, long friendId, String friendName, String content, Timestamp commentTime) {
-        this.commentId = commentId;
+    public commentsPDM( long markId, long friendId, String friendName, String content, Timestamp commentTime) {
+        //this.commentId = commentId;
         this.markId = markId;
         this.friendId = friendId;
         this.friendName = friendName;

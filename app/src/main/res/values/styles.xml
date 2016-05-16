@@ -12,7 +12,7 @@
         <!--状态栏底色-->
         <item name="colorPrimaryDark">#98accd</item>
         <!--导航栏上的标题颜色-->
-        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColorPrimary">@android:color/black</item>
         <!--Activity窗口的颜色-->
         <item name="android:windowBackground">@color/blue</item>
         <!--按钮选中或者点击获得焦点后的颜色-->
@@ -22,7 +22,7 @@
         <!--Button按钮正常状态颜色-->
         <item name="colorButtonNormal">#98accd</item>
         <!--EditText 输入框中字体的颜色-->
-        <item name="editTextColor">@android:color/white</item>
+        <item name="editTextColor">@android:color/black</item>
 
     </style>
     <style name="EditMark" parent="Base.Theme.AppCompat.Light.DarkActionBar">
