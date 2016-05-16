@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -65,11 +64,11 @@ import butterknife.OnClick;
 /**
  * Created by eagle on 2016/4/9.
  */
-public class SharedFragment extends ListFragment implements ICircleView {
+public class SharedFragment extends ListFragment implements  ICircleView {
 
     private String serviceUrl;
 
-    private String[] mStringList = {"WeMark Sun.", "WeMark Mon.", "WeMark Tues.", "WeMark Wed.", "WeMark Thur.", "WeMark Fri.", "WeMark Sat."};
+    private String[] mStringList={"WeMark Sun.","WeMark Mon.","WeMark Tues.","WeMark Wed.","WeMark Thur.","WeMark Fri.","WeMark Sat."};
 
 
     ListView mCircleLv;
@@ -202,6 +201,7 @@ public class SharedFragment extends ListFragment implements ICircleView {
         });
 
 
+
         mCircleLv.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -217,7 +217,7 @@ public class SharedFragment extends ListFragment implements ICircleView {
 
 //        mAdapter = new CircleAdapter(getActivity());
 //        mAdapter.setCirclePresenter(mPresenter);
-        // mCircleLv.setAdapter(mAdapter);
+       // mCircleLv.setAdapter(mAdapter);
         sendIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -602,7 +602,7 @@ public class SharedFragment extends ListFragment implements ICircleView {
 //    object.put("content",content);
 
 //    //new addComment().execute(object);//调用这个异步类的时候，直接把上面的jsonobject传入即可
-
+    long commentId; //评论的id
     private class addComment extends AsyncTask<JSONObject, Void, Void> {
         private String status;
         private String info;
@@ -619,6 +619,7 @@ public class SharedFragment extends ListFragment implements ICircleView {
                         try {
                             status = jsonObject.getString("status");
                             info = jsonObject.getString("info");
+                            commentId = jsonObject.getLong("id");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -678,6 +679,7 @@ public class SharedFragment extends ListFragment implements ICircleView {
                         try {
                             status = jsonObject.getString("status");
                             info = jsonObject.getString("info");
+                            likeId = jsonObject.getLong("id");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -760,3 +762,74 @@ public class SharedFragment extends ListFragment implements ICircleView {
         }
     }
 }
+
+
+//===============================================================================
+//删除评论
+//private static final String serviceUrl_deleteLike="http://119.29.166.177:8080/deleteLike";
+//private static final String serviceUrl_deleteComment="http://119.29.166.177:8080/deleteComment";
+//private Handler handler_deleteMark = new Handler(){
+//    public void handleMessage(Message msg) {
+//        switch (msg.what) {
+//            case 1:
+//                //这里加上在本地的删除评论的事件就可以了
+//                mAdapter.notifyDataSetChanged();//这里可以改善
+//                Toast.makeText(getActivity(),"删除评论成功",Toast.LENGTH_SHORT).show();
+//
+//                break;
+//            case -1:
+//                Toast.makeText(getActivity(),"删除评论失败……",Toast.LENGTH_SHORT).show();
+//                break;
+//        }
+//    }
+//};
+// String servicePath=serviceUrl_deleteLike 或者 serviceUrl_deleteComment;
+//        JSONObject idObject = new JSONObject();
+//try {
+//            idObject.put("id", 赞的id或者评论的id);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+////    //这里需要传入 评论或者赞的id，类型为long。 方法：new deleteCommentorLike().execute(servicePath);
+//private class deleteMark extends AsyncTask<String, Void, Void> {
+//    private String status;
+//    private String info;
+//    @Override
+//    protected Void doInBackground(String... params) {
+//
+//        HttpUtil.getJsonArrayByHttp(params[0],idObject, new HttpCallbackListener() {
+//            @Override
+//            public void onFinishGetJson(JSONObject jsonObject) {
+//                if (jsonObject == null) {
+//                    Log.i("status", "json:null");
+//                } else if (jsonObject != null) {
+//                    try {
+//                        status = jsonObject.getString("status");
+//                        info = jsonObject.getString("info");
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                Message message = new Message();
+//                if (status.equals("1") && info.equals("OK")) {
+//                    message.what = 1;
+//                } else {
+//                    message.what = -1;
+//                }
+//                handler_deleteMark.sendMessage(message);
+//            }
+//
+//            @Override
+//            public void onFinishGetString(String response) {
+//
+//            }
+//
+//            @Override
+//            public void onError(Exception e) {
+//                Log.e("LoginFrag", e.getMessage());
+//                status = "0";
+//            }
+//        });
+//        return null;
+//    }
+//}
