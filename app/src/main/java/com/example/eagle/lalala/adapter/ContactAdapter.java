@@ -37,6 +37,12 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
 	}
 
 	@Override
+	public void notifyDataSetChanged() {
+		super.notifyDataSetChanged();
+		Collections.sort(UserInfos, new PinyinComparator());
+	}
+
+	@Override
 	public int getCount() {
 		return UserInfos.size();
 	}
